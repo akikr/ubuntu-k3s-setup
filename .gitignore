@@ -1,0 +1,111 @@
+# Purpose: keep repo free of OS/editor artifacts, secrets, build artifacts, and local state
+
+# macOS
+.DS_Store
+
+# System files
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Swap / backups
+*~
+*.swp
+*.swo
+
+# Logs and runtime files
+*.log
+logs/
+tmp/
+*.pid
+*.sock
+
+# Shell history
+.history
+.bash_history
+.zsh_history
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pytest_cache/
+coverage/
+.coverage
+env/
+venv/
+ENV/
+.venv/
+
+# Node (in case scripts use node tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+crash.log
+
+# Ansible
+.hosts
+.ansible/
+
+# Kubernetes / k3s related
+# local kubeconfig files and generated manifests
+kubeconfig
+kubeconfig.*
+kubeconfig.yaml
+kubeconfig_*
+k3s.yaml
+k3s-*.yaml
+kube-config
+kubeconfigs/
+
+# Secrets / environment files
+.env
+.env.*
+*.secret
+*.secrets
+secrets/
+credentials/
+
+# SSH keys and private keys
+*.pem
+*.key
+id_rsa*
+id_ecdsa*
+id_ed25519*
+
+# Certificates
+*.crt
+*.csr
+*.der
+*.p12
+*.pfx
+
+# Binary / build artifacts
+dist/
+build/
+*.exe
+*.dll
+*.so
+
+# Misc
+*.tmp
+
+# Ignore local installer caches or OS-specific installers
+*.iso
+
+# End of .gitignore
