@@ -110,7 +110,7 @@ vm_exists() {
 
 vm_ip() {
   local name="$1"
-  run_multipass info "$name" --format json | sed -n 's/.*"ipv4"[[:space:]]*:[[:space:]]*\["\([0-9.]*\)"\].*/\1/p' | head -n1
+  run_multipass info "$name" | grep "IPv4" | awk '{print $2}'
 }
 
 ensure_host_tools() {
@@ -349,7 +349,7 @@ wait_for_vm_ip() {
   local name="$1"
   local ip=""
   local attempt=1
-  local max_attempts=60
+  local max_attempts=180
 
   while [[ $attempt -le $max_attempts ]]; do
     ip="$(vm_ip "$name" || true)"
