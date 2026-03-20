@@ -60,6 +60,7 @@ chmod +x ./scripts/setup.sh
 What this step does:
 - creates/reuses `k8s-master` and `k8s-worker`
 - installs K3s server/agent
+- applies Kubernetes node role labels so `k8s-master` shows `control-plane` and `k8s-worker` shows `worker`
 - checks and installs host `kubectl` and `helm` (unless disabled)
 - configures host kubeconfig at `~/.kube/config`
 - installs/configures host NGINX reverse proxy for ports `80` and `443` (unless disabled)
@@ -141,7 +142,13 @@ multipass info k8s-master
 
 Replace `<MASTER_IP>` and `<TOKEN>`:
 ```bash
-multipass exec k8s-worker -- bash -lc 'curl -sfL https://get.k3s.io | K3S_URL=https://<MASTER_IP>:6443 K3S_TOKEN=<TOKEN> sh -'
+multipass exec k8s-worker -- bash -lc 'curl -sfL https://get.k3s.io | K3S_URL=https://<MASTER_IP>:6443 K3S_TOKEN=<TOKEN> INSTALL_K3S_EXEC="agent --node-label node-role.kubernetes.io/worker=worker" sh -'
+```
+
+Apply node role labels explicitly:
+```bash
+multipass exec k8s-master -- sudo kubectl label node k8s-master node-role.kubernetes.io/control-plane=true --overwrite
+multipass exec k8s-master -- sudo kubectl label node k8s-worker node-role.kubernetes.io/worker=worker --overwrite
 ```
 
 ### 4. Verify from master

@@ -393,7 +393,10 @@ fi
 echo "Installing K3s agent on ${WORKER_NAME}..."
 run_multipass exec "$WORKER_NAME" -- bash -lc "
   if ! command -v k3s-agent >/dev/null 2>&1; then
-    curl -sfL https://get.k3s.io | K3S_URL=https://${MASTER_IP}:6443 K3S_TOKEN=${MASTER_TOKEN} sh -
+    curl -sfL https://get.k3s.io | \
+      K3S_URL=https://${MASTER_IP}:6443 \
+      K3S_TOKEN=${MASTER_TOKEN} \
+      INSTALL_K3S_EXEC='agent --node-label node-role.kubernetes.io/worker=worker' sh -
   fi
   sudo systemctl enable --now k3s-agent
 "
@@ -401,6 +404,10 @@ run_multipass exec "$WORKER_NAME" -- bash -lc "
 echo "Waiting for both nodes to become Ready..."
 run_multipass exec "$MASTER_NAME" -- sudo kubectl wait --for=condition=Ready node/"$MASTER_NAME" --timeout=180s
 run_multipass exec "$MASTER_NAME" -- sudo kubectl wait --for=condition=Ready node/"$WORKER_NAME" --timeout=180s
+
+echo "Applying node role labels..."
+run_multipass exec "$MASTER_NAME" -- sudo kubectl label node "$MASTER_NAME" node-role.kubernetes.io/control-plane=true --overwrite
+run_multipass exec "$MASTER_NAME" -- sudo kubectl label node "$WORKER_NAME" node-role.kubernetes.io/worker=worker --overwrite
 
 if [[ "$CONFIGURE_KUBECONFIG" -eq 1 ]]; then
   if [[ "$ENSURE_HOST_TOOLS" -eq 1 ]]; then
